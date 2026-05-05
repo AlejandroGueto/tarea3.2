@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resolución: Tarea 3.2 - Latín I</title>
+  
+  <!-- Tailwind CSS para los estilos -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- React y ReactDOM -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  
+  <!-- Babel para compilar JSX en el navegador -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  
+  <!-- FontAwesome para los iconos (Sustituye a Lucide) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="antialiased">
+  <!-- Contenedor principal donde React inyectará la aplicación -->
+  <div id="root"></div>
+
+  <!-- Código de la aplicación en React/JSX -->
+  <script type="text/babel">
+    // --- IMPORTACIONES DESDE GLOBALES (Adaptado para HTML sin Node.js) ---
+    const { useState } = React;
+    
+    // --- COMPONENTES DE ICONOS (FontAwesome Wrapper) ---
+    const Icon = ({ name, size = 24, className = '' }) => (
+      <i className={`${name} ${className}`} style={{ fontSize: size, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: size, height: size }}></i>
+    );
+    const BookOpen = (p) => <Icon name="fa-solid fa-book-open" {...p} />
+    const AlertCircle = (p) => <Icon name="fa-solid fa-circle-exclamation" {...p} />
+    const Eye = (p) => <Icon name="fa-solid fa-eye" {...p} />
+    const Info = (p) => <Icon name="fa-solid fa-circle-info" {...p} />
+    const ChevronRight = (p) => <Icon name="fa-solid fa-chevron-right" {...p} />
+    const Check = (p) => <Icon name="fa-solid fa-check" {...p} />
+    const X = (p) => <Icon name="fa-solid fa-xmark" {...p} />
+    const Award = (p) => <Icon name="fa-solid fa-award" {...p} />
+    const Sparkles = (p) => <Icon name="fa-solid fa-wand-magic-sparkles" {...p} />
+    const Layers = (p) => <Icon name="fa-solid fa-layer-group" {...p} />
+    const ListChecks = (p) => <Icon name="fa-solid fa-list-check" {...p} />
+    const History = (p) => <Icon name="fa-solid fa-clock-rotate-left" {...p} />
+    const ToggleLeft = (p) => <Icon name="fa-solid fa-toggle-off" {...p} />
+    const ToggleRight = (p) => <Icon name="fa-solid fa-toggle-on" {...p} />
+    const BrainCircuit = (p) => <Icon name="fa-solid fa-brain" {...p} />
+    const CheckCircle = (p) => <Icon name="fa-solid fa-circle-check" {...p} />
+
+    // --- DATA ---
+    const quizQuestions = [
+      { id: 1, q: '¿Qué poeta latino es el autor de la "Eneida", la gran epopeya escrita para glorificar los orígenes de Roma?', options: ['Ovidio', 'Horacio', 'Virgilio', 'Catulo'], correct: 2, exp: 'Virgilio compuso la Eneida por encargo del emperador Augusto para vincular el origen de Roma (a través de Eneas) con los dioses y Troya.' },
+      { id: 2, q: 'Según la leyenda, ¿quién fue el primer rey de Roma tras asesinar a su hermano?', options: ['Numa Pompilio', 'Rómulo', 'Remo', 'Tarquinio el Soberbio'], correct: 1, exp: 'Rómulo asesinó a su hermano Remo tras una disputa sobre la colina en la que fundar la ciudad y los presagios divinos.' },
+      { id: 3, q: '¿Cuál de estos autores es el máximo representante de la oratoria romana y autor de las "Catilinarias"?', options: ['Julio César', 'Cicerón', 'Séneca', 'Tácito'], correct: 1, exp: 'Cicerón descubrió y desbarató la conjura de Catilina durante su consulado, pronunciando sus famosos discursos, las Catilinarias.' },
+      { id: 4, q: '¿Qué nombre recibían las guerras que enfrentaron a Roma contra Cartago por el dominio del Mediterráneo?', options: ['Guerras Púnicas', 'Guerras Médicas', 'Guerras Gálicas', 'Guerras Macedónicas'], correct: 0, exp: 'Fueron tres guerras. Los romanos llamaban "puni" a los cartagineses (fenicios).' },
+      { id: 5, q: 'En la mitología romana, ¿cuál es el equivalente de la diosa griega Atenea?', options: ['Venus', 'Diana', 'Juno', 'Minerva'], correct: 3, exp: 'Minerva es la diosa de la sabiduría, las artes, la estrategia militar y protectora de Roma.' },
+      { id: 6, q: '¿Qué famosa obra de Ovidio recopila más de 250 mitos griegos y romanos que terminan en una transformación?', options: ['El Arte de Amar', 'Las Metamorfosis', 'Tristes', 'Fastos'], correct: 1, exp: 'Las Metamorfosis es una obra clave para conocer la mitología clásica, desde la creación del mundo hasta la deificación de Julio César.' },
+      { id: 7, q: '¿Qué acontecimiento histórico marca el final de la República Romana y el inicio del Imperio?', options: ['El asesinato de Julio César', 'La victoria de Octavio Augusto en la batalla de Accio', 'La destrucción de Cartago', 'La invasión de los galos'], correct: 1, exp: 'Tras derrotar a Marco Antonio y Cleopatra en Accio (31 a.C.), Octavio se convirtió en el único gobernante, recibiendo después el título de Augusto.' },
+      { id: 8, q: 'En la sociedad romana republicana, ¿cómo se llamaba a la clase social formada por los descendientes de las primeras familias fundadoras?', options: ['Plebeyos', 'Libertos', 'Patricios', 'Équites'], correct: 2, exp: 'Los patricios (de "patres") conformaban la aristocracia originaria que acaparaba los cargos políticos y religiosos.' },
+      { id: 9, q: '¿A qué género literario pertenecen Plauto y Terencio?', options: ['Épica', 'Historiografía', 'Comedia (Teatro)', 'Poesía lírica'], correct: 2, exp: 'Ambos son los mayores representantes de la comedia palliata (comedia de tema y ambientación griega) en Roma.' },
+      { id: 10, q: '¿Qué ciudad fue sepultada por la erupción del volcán Vesubio en el año 79 d.C.?', options: ['Ostia', 'Pompeya', 'Capua', 'Siracusa'], correct: 1, exp: 'Pompeya, junto con Herculano y Estabia, quedó fosilizada bajo las cenizas, conservando una radiografía exacta de la vida romana.' },
+      { id: 11, q: '¿Qué poeta lírico romano cantó su amor por una mujer a la que llamó "Lesbia"?', options: ['Catulo', 'Tibulo', 'Propercio', 'Marcial'], correct: 0, exp: 'Catulo le dedicó apasionados y amargos poemas a "Lesbia" (pseudónimo de Clodia), influenciado por la poetisa griega Safo de Lesbos.' },
+      { id: 12, q: '¿Qué significa el famoso tópico literario "Carpe diem", acuñado por Horacio?', options: ['Recuerda que morirás', 'Aprovecha el día', 'El lugar ameno', '¿Dónde están?'], correct: 1, exp: 'Textualmente "Cosecha el día". Es una invitación a disfrutar el momento presente ante la fugacidad de la vida.' },
+      { id: 13, q: 'En el cursus honorum, ¿cuál era la magistratura más alta de la República?', options: ['Pretor', 'Cuestor', 'Cónsul', 'Edil'], correct: 2, exp: 'Los cónsules eran los jefes de estado y comandaban el ejército. Eran dos para evitar tiranías y tenían poder de veto mutuo.' },
+      { id: 14, q: '¿Qué emperador romano promulgó el Edicto de Milán (313 d.C.)?', options: ['Nerón', 'Trajano', 'Constantino I', 'Teodosio I'], correct: 2, exp: 'Constantino legalizó el cristianismo. Posteriormente, Teodosio I la convertiría en la religión oficial del Imperio.' },
+      { id: 15, q: '¿Cómo se denominaban los baños públicos en la antigua Roma?', options: ['Basílicas', 'Termas', 'Foros', 'Anfiteatros'], correct: 1, exp: 'Las termas eran complejos de ocio, higiene y negocios. Incluían salas de diferentes temperaturas: frigidarium, tepidarium, caldarium.' },
+      { id: 16, q: '¿Qué historiador romano escribió la obra "Ab urbe condita"?', options: ['Tito Livio', 'Suetonio', 'Salustio', 'Tácito'], correct: 0, exp: 'Tito Livio narró la historia "Desde la fundación de la ciudad" en 142 libros, ensalzando las virtudes tradicionales romanas.' },
+      { id: 17, q: 'En la mitología, ¿quién era el dios romano del inframundo y los muertos?', options: ['Neptuno', 'Baco', 'Plutón', 'Marte'], correct: 2, exp: 'Plutón (equivalente al Hades griego) gobernaba el reino de los muertos junto a su esposa Proserpina.' },
+      { id: 18, q: '¿En qué año se produjo la caída del Imperio Romano de Occidente?', options: ['395 d.C.', '476 d.C.', '711 d.C.', '1453 d.C.'], correct: 1, exp: 'En el 476 d.C., el jefe bárbaro Odoacro depuso al último emperador de Occidente, Rómulo Augústulo.' },
+      { id: 19, q: '¿Cuál era la función principal de los anfiteatros romanos, como el Coliseo?', options: ['Representaciones teatrales', 'Carreras de carros', 'Luchas de gladiadores (munera) y fieras (venationes)', 'Asambleas políticas'], correct: 2, exp: 'A diferencia del teatro (semicircular) y el circo (alargado), el anfiteatro (ovalado) se usaba para espectáculos sangrientos.' },
+      { id: 20, q: '¿Qué filósofo cordobés, tutor de Nerón, es el máximo representante del estoicismo romano?', options: ['Marco Aurelio', 'Séneca', 'Epicteto', 'Quintiliano'], correct: 1, exp: 'Lucio Anneo Séneca fue un prolífico escritor de tratados morales, epístolas y tragedias, promoviendo la ataraxia (tranquilidad del alma).' }
+    ];
+
+    // --- COMPONENTS ---
+
+    // Componente Core: Separador de Raíz y Desinencia
+    const LWord = ({ r, e, showDes }) => {
+      if (!showDes) return <span className="font-serif text-[1.05rem]">{r}{e}</span>;
+      
+      return (
+        <span className="font-serif text-[1.05rem] inline-flex items-center">
+          <span className="text-slate-700">{r}</span>
+          {e && (
+            <span className="text-rose-600 font-bold bg-rose-100/60 rounded px-1 ml-[1px] border-b-2 border-rose-400 transform hover:scale-110 transition-transform cursor-help" title={`Desinencia: -${e}`}>
+              -{e}
+            </span>
+          )}
+        </span>
+      );
+    };
+
+    const TeacherNote = ({ title, children }) => (
+      <div className="bg-blue-50/80 backdrop-blur-sm border-l-4 border-blue-500 p-5 my-5 rounded-r-xl shadow-sm">
+        <div className="flex items-center gap-2 text-blue-800 font-bold mb-2">
+          <BrainCircuit size={22} className="text-blue-600" />
+          <h4 className="text-lg">{title}</h4>
+        </div>
+        <div className="text-blue-900 text-sm leading-relaxed">
+          {children}
+        </div>
+      </div>
+    );
+
+    const PremiumTip = ({ title, text }) => (
+      <div className="bg-gradient-to-r from-amber-50 to-yellow-50 border border-amber-200 p-4 rounded-xl my-4 flex gap-4 items-start shadow-sm">
+        <Sparkles size={24} className="text-amber-500 shrink-0 mt-1" />
+        <div>
+          <h4 className="font-bold text-amber-900 mb-1">{title}</h4>
+          <p className="text-amber-800 text-sm">{text}</p>
+        </div>
+      </div>
+    );
+
+    const RevealBlock = ({ title, defaultOpen = false, children }) => {
+      const [isOpen, setIsOpen] = useState(defaultOpen);
+      return (
+        <div className="border border-slate-200/60 rounded-xl overflow-hidden my-6 bg-white shadow-sm hover:shadow-md transition-all">
+          <button 
+            onClick={() => setIsOpen(!isOpen)}
+            className="w-full flex justify-between items-center p-5 bg-gradient-to-r from-slate-50 to-white hover:from-indigo-50 hover:to-white text-slate-700 font-bold transition-all"
+          >
+            <span className="flex items-center gap-3">
+              {isOpen ? <Eye className="text-indigo-600" size={22}/> : <Eye className="text-slate-400" size={22}/>}
+              {title}
+            </span>
+            <ChevronRight size={22} className={`transform transition-transform duration-300 ${isOpen ? 'rotate-90 text-indigo-500' : 'text-slate-400'}`} />
+          </button>
+          {isOpen && (
+            <div className="p-6 border-t border-slate-100 animate-in fade-in slide-in-from-top-2 duration-300 bg-white">
+              {children}
+            </div>
+          )}
+        </div>
+      );
+    };
+
+    // --- MAIN APP ---
+
+    function App() {
+      const [activeTab, setActiveTab] = useState('teoria');
+      const [showDesinencias, setShowDesinencias] = useState(false);
+      
+      // Quiz State
+      const [quizState, setQuizState] = useState(quizQuestions.map(() => null));
+      const [quizScore, setQuizScore] = useState(0);
+
+      const handleQuizAnswer = (qIndex, oIndex) => {
+        if (quizState[qIndex] !== null) return;
+        const isCorrect = quizQuestions[qIndex].correct === oIndex;
+        if (isCorrect) setQuizScore(prev => prev + 1);
+        const newState = [...quizState];
+        newState[qIndex] = { selected: oIndex, isCorrect };
+        setQuizState(newState);
+      };
+
+      return (
+        <div className="min-h-screen bg-[#f8fafc] p-4 md:p-8 font-sans text-slate-800 selection:bg-indigo-200 selection:text-indigo-900">
+          <div className="max-w-5xl mx-auto space-y-6">
+            
+            {/* HEADER & TOOLBAR */}
+            <header className="bg-white rounded-3xl shadow-xl shadow-indigo-100/50 p-8 border-t-[10px] border-indigo-600 relative overflow-hidden">
+              <div className="absolute top-0 right-0 -mt-10 -mr-10 opacity-5">
+                <BookOpen size={250} />
+              </div>
+              
+              <div className="relative z-10 flex flex-col md:flex-row justify-between items-center gap-6">
+                <div>
+                  <h1 className="text-4xl font-extrabold text-slate-800 tracking-tight mb-2">Resolución: Tarea 3.2</h1>
+                  <h2 className="text-lg text-indigo-600 font-semibold flex items-center gap-2">
+                    <BookOpen size={20} /> Latín I - 1º Bachillerato Semipresencial
+                  </h2>
+                </div>
+                
+                {/* PREMIUM TOOL: DESINENCIA TOGGLE */}
+                <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 flex items-center gap-4 shadow-inner">
+                  <div>
+                    <div className="text-sm font-bold text-slate-700 flex items-center gap-1">
+                      <Sparkles size={14} className="text-rose-500" /> Rayos X (Desinencias)
+                    </div>
+                    <div className="text-xs text-slate-500">Separa la raíz de su terminación</div>
+                  </div>
+                  <button 
+                    onClick={() => setShowDesinencias(!showDesinencias)}
+                    className={`transition-colors p-1 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${showDesinencias ? 'text-rose-600' : 'text-slate-400 hover:text-slate-600'}`}
+                  >
+                    {showDesinencias ? <ToggleRight size={40} className="text-rose-600" /> : <ToggleLeft size={40} />}
+                  </button>
+                </div>
+              </div>
+
+              {/* TABS NAVIGATION */}
+              <div className="flex flex-wrap gap-2 mt-8 pt-6 border-t border-slate-100">
+                {[
+                  { id: 'teoria', icon: Layers, label: '1. Teoría Gramatical' },
+                  { id: 'practica', icon: ListChecks, label: '2. Declinaciones' },
+                  { id: 'verbos', icon: History, label: '3-4. Verbos' },
+                  { id: 'cultura', icon: Award, label: '5. Cultura Clásica' },
+                ].map(tab => (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`flex items-center gap-2 px-5 py-2.5 rounded-full font-semibold transition-all duration-300 ${
+                      activeTab === tab.id 
+                        ? 'bg-indigo-600 text-white shadow-md shadow-indigo-200 scale-105' 
+                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-800'
+                    }`}
+                  >
+                    <tab.icon size={18} /> {tab.label}
+                  </button>
+                ))}
+              </div>
+            </header>
+
+            {/* TAB CONTENT: TEORÍA */}
+            {activeTab === 'teoria' && (
+              <section className="bg-white rounded-3xl shadow-lg p-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <h3 className="text-2xl font-bold text-indigo-900 border-b-2 border-indigo-100 pb-3 mb-6 flex items-center gap-2">
+                  <Layers className="text-indigo-500"/> Morfología Nominal y Pronominal
+                </h3>
+                
+                <PremiumTip 
+                  title="Truco Nemotécnico: El Genitivo es el DNI de la palabra"
+                  text="Nunca intentes adivinar la declinación por el Nominativo (la primera palabra del enunciado). Fíjate SIEMPRE en la terminación de la segunda palabra (el Genitivo). Es el código de barras que te dirá a qué grupo pertenece."
+                />
+
+                <RevealBlock title="1.1 Declinaciones en Latín" defaultOpen={true}>
+                  <div className="overflow-x-auto rounded-xl border border-slate-200 shadow-sm">
+                    <table className="w-full text-left border-collapse">
+                      <thead>
+                        <tr className="bg-indigo-50/50">
+                          <th className="p-4 border-b border-r text-indigo-900 font-bold">Declinación</th>
+                          <th className="p-4 border-b border-r text-indigo-900 font-bold">Genitivo Sing.</th>
+                          <th className="p-4 border-b border-r text-indigo-900 font-bold">Subtipos Principales</th>
+                          <th className="p-4 border-b text-indigo-900 font-bold">Ejemplo Analizado</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr className="hover:bg-slate-50 transition-colors">
+                          <td className="p-4 border-b border-r font-bold text-slate-700">Primera</td>
+                          <td className="p-4 border-b border-r"><span className="bg-rose-100 text-rose-800 font-bold px-3 py-1 rounded-full">-ae</span></td>
+                          <td className="p-4 border-b border-r text-slate-600">Femeninos (y oficios masculinos)</td>
+                          <td className="p-4 border-b"><LWord r="ros" e="a" showDes={showDesinencias}/>, <LWord r="ros" e="ae" showDes={showDesinencias}/> (f)</td>
+                        </tr>
+                        <tr className="hover:bg-slate-50 transition-colors">
+                          <td className="p-4 border-b border-r font-bold text-slate-700">Segunda</td>
+                          <td className="p-4 border-b border-r"><span className="bg-rose-100 text-rose-800 font-bold px-3 py-1 rounded-full">-i</span></td>
+                          <td className="p-4 border-b border-r text-slate-600">Masculinos (-us, -er) y Neutros (-um)</td>
+                          <td className="p-4 border-b"><LWord r="domin" e="us" showDes={showDesinencias}/>, <LWord r="domin" e="i" showDes={showDesinencias}/> (m)</td>
+                        </tr>
+                        <tr className="hover:bg-slate-50 transition-colors">
+                          <td className="p-4 border-b border-r font-bold text-slate-700">Tercera</td>
+                          <td className="p-4 border-b border-r"><span className="bg-rose-100 text-rose-800 font-bold px-3 py-1 rounded-full">-is</span></td>
+                          <td className="p-4 border-b border-r text-slate-600">Temas en Consonante y Temas en -i</td>
+                          <td className="p-4 border-b"><LWord r="consul" e="" showDes={showDesinencias}/>, <LWord r="consul" e="is" showDes={showDesinencias}/> (m)</td>
+                        </tr>
+                        <tr className="hover:bg-slate-50 transition-colors">
+                          <td className="p-4 border-b border-r font-bold text-slate-700">Cuarta</td>
+                          <td className="p-4 border-b border-r"><span className="bg-rose-100 text-rose-800 font-bold px-3 py-1 rounded-full">-us</span></td>
+                          <td className="p-4 border-b border-r text-slate-600">Masculinos (-us) y Neutros (-u)</td>
+                          <td className="p-4 border-b"><LWord r="man" e="us" showDes={showDesinencias}/>, <LWord r="man" e="us" showDes={showDesinencias}/> (f)</td>
+                        </tr>
+                        <tr className="hover:bg-slate-50 transition-colors">
+                          <td className="p-4 border-r font-bold text-slate-700">Quinta</td>
+                          <td className="p-4 border-r"><span className="bg-rose-100 text-rose-800 font-bold px-3 py-1 rounded-full">-ei</span></td>
+                          <td className="p-4 border-r text-slate-600">Femeninos (temas en -e)</td>
+                          <td className="p-4"><LWord r="di" e="es" showDes={showDesinencias}/>, <LWord r="di" e="ei" showDes={showDesinencias}/> (m/f)</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </RevealBlock>
+
+                <RevealBlock title="1.2 Tipos de Adjetivos">
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <div className="bg-indigo-50/30 p-6 rounded-2xl border border-indigo-100">
+                      <h4 className="font-bold text-indigo-800 mb-3 text-lg">Adjetivos de la 1ª Clase (2-1-2)</h4>
+                      <p className="text-sm text-slate-600 mb-4">Utilizan las declinaciones 2ª (Masc), 1ª (Fem) y 2ª (Neutro).</p>
+                      <ul className="space-y-2 text-slate-700 font-serif">
+                        <li className="flex gap-2 items-center"><ChevronRight size={16} className="text-indigo-400"/> Subtipo regular: <LWord r="bon" e="us" showDes={showDesinencias}/>, <LWord r="bon" e="a" showDes={showDesinencias}/>, <LWord r="bon" e="um" showDes={showDesinencias}/></li>
+                        <li className="flex gap-2 items-center"><ChevronRight size={16} className="text-indigo-400"/> Subtipo en -er: <LWord r="pulcher" e="" showDes={showDesinencias}/>, <LWord r="pulchr" e="a" showDes={showDesinencias}/>, <LWord r="pulchr" e="um" showDes={showDesinencias}/></li>
+                      </ul>
+                    </div>
+                    <div className="bg-emerald-50/30 p-6 rounded-2xl border border-emerald-100">
+                      <h4 className="font-bold text-emerald-800 mb-3 text-lg">Adjetivos de la 2ª Clase (3ª Decl.)</h4>
+                      <p className="text-sm text-slate-600 mb-4">Se declinan exclusivamente por la 3ª declinación (temas en -i).</p>
+                      <ul className="space-y-2 text-slate-700 font-serif">
+                        <li className="flex gap-2 items-center"><ChevronRight size={16} className="text-emerald-400"/> 3 Terminaciones: <LWord r="acer" e="" showDes={showDesinencias}/>, <LWord r="acr" e="is" showDes={showDesinencias}/>, <LWord r="acr" e="e" showDes={showDesinencias}/></li>
+                        <li className="flex gap-2 items-center"><ChevronRight size={16} className="text-emerald-400"/> 2 Terminaciones: <LWord r="omn" e="is" showDes={showDesinencias}/>, <LWord r="omn" e="e" showDes={showDesinencias}/></li>
+                        <li className="flex gap-2 items-center"><ChevronRight size={16} className="text-emerald-400"/> 1 Terminación: <LWord r="felix" e="" showDes={showDesinencias}/>, <LWord r="felic" e="is" showDes={showDesinencias}/></li>
+                      </ul>
+                    </div>
+                  </div>
+                </RevealBlock>
+              </section>
+            )}
+
+            {/* TAB CONTENT: PRÁCTICA DE DECLINACIONES */}
+            {activeTab === 'practica' && (
+              <section className="bg-white rounded-3xl shadow-lg p-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <h3 className="text-2xl font-bold text-indigo-900 border-b-2 border-indigo-100 pb-3 mb-6 flex items-center gap-2">
+                  <ListChecks className="text-indigo-500"/> Práctica de Declinaciones
+                </h3>
+                
+                {/* EXERCISE 1 */}
+                <div className="mb-10">
+                  <div className="bg-slate-800 text-white p-4 rounded-t-xl font-bold font-serif text-lg flex justify-between items-center">
+                    <span>1. agricola, -ae (m) + miser, misera, miserum</span>
+                    <span className="text-xs bg-slate-700 px-3 py-1 rounded-full font-sans font-normal tracking-wide">1ª Decl. + Adj 2-1-2</span>
+                  </div>
+                  
+                  <TeacherNote title="¡Cuidado con la Trampa del Género!">
+                    Aunque <em>agricola</em> se declina por la 1ª declinación (típicamente femenina), su género es <strong>MASCULINO</strong> (campesino). 
+                    Por tanto, el adjetivo debe concordar en <strong>masculino</strong>, declinándose por la 2ª declinación. Observa cómo al activar el botón de "Rayos X" arriba, verás las desinencias de la 1ª y 2ª declinación conviviendo juntas.
+                  </TeacherNote>
+
+                  <div className="overflow-x-auto rounded-b-xl border-x border-b border-slate-200 shadow-sm">
+                    <table className="w-full text-center border-collapse">
+                      <thead><tr className="bg-slate-50 border-b"><th className="p-3 text-slate-500">CASO</th><th className="p-3 text-slate-500">SINGULAR</th><th className="p-3 text-slate-500">PLURAL</th></tr></thead>
+                      <tbody className="divide-y divide-slate-100">
+                        <tr className="hover:bg-slate-50/50"><td className="p-3 font-bold text-slate-600 bg-slate-50/30">NOM</td><td><LWord r="agricol" e="a" showDes={showDesinencias}/> <LWord r="miser" e="" showDes={showDesinencias}/></td><td><LWord r="agricol" e="ae" showDes={showDesinencias}/> <LWord r="miser" e="i" showDes={showDesinencias}/></td></tr>
+                        <tr className="hover:bg-slate-50/50"><td className="p-3 font-bold text-slate-600 bg-slate-50/30">VOC</td><td><LWord r="agricol" e="a" showDes={showDesinencias}/> <LWord r="miser" e="" showDes={showDesinencias}/></td><td><LWord r="agricol" e="ae" showDes={showDesinencias}/> <LWord r="miser" e="i" showDes={showDesinencias}/></td></tr>
+                        <tr className="hover:bg-slate-50/50"><td className="p-3 font-bold text-slate-600 bg-slate-50/30">ACU</td><td><LWord r="agricol" e="am" showDes={showDesinencias}/> <LWord r="miser" e="um" showDes={showDesinencias}/></td><td><LWord r="agricol" e="as" showDes={showDesinencias}/> <LWord r="miser" e="os" showDes={showDesinencias}/></td></tr>
+                        <tr className="hover:bg-slate-50/50"><td className="p-3 font-bold text-slate-600 bg-slate-50/30">GEN</td><td><LWord r="agricol" e="ae" showDes={showDesinencias}/> <LWord r="miser" e="i" showDes={showDesinencias}/></td><td><LWord r="agricol" e="arum" showDes={showDesinencias}/> <LWord r="miser" e="orum" showDes={showDesinencias}/></td></tr>
+                        <tr className="hover:bg-slate-50/50"><td className="p-3 font-bold text-slate-600 bg-slate-50/30">DAT</td><td><LWord r="agricol" e="ae" showDes={showDesinencias}/> <LWord r="miser" e="o" showDes={showDesinencias}/></td><td><LWord r="agricol" e="is" showDes={showDesinencias}/> <LWord r="miser" e="is" showDes={showDesinencias}/></td></tr>
+                        <tr className="hover:bg-slate-50/50"><td className="p-3 font-bold text-slate-600 bg-slate-50/30">ABL</td><td><LWord r="agricol" e="a" showDes={showDesinencias}/> <LWord r="miser" e="o" showDes={showDesinencias}/></td><td><LWord r="agricol" e="is" showDes={showDesinencias}/> <LWord r="miser" e="is" showDes={showDesinencias}/></td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                {/* EXERCISE 2 */}
+                <div className="mb-10">
+                  <div className="bg-slate-800 text-white p-4 rounded-t-xl font-bold font-serif text-lg flex justify-between items-center">
+                    <span>2. miles, milit-is (m) + acer, acr-is, acr-e</span>
+                    <span className="text-xs bg-slate-700 px-3 py-1 rounded-full font-sans font-normal tracking-wide">3ª Decl. Cons + Adj 3ª (i)</span>
+                  </div>
+                  
+                  <PremiumTip 
+                    title="Sustantivo en Consonante vs Adjetivo en -i"
+                    text="Presta atención al Genitivo Plural: El sustantivo 'miles' es imparisílabo (tema consonante), por lo que hace el Genitivo Plural en '-um'. Sin embargo, los adjetivos de la 3ª declinación siguen el modelo de los temas en -i, por lo que su Genitivo Plural es '-ium' (milit-um acr-ium)."
+                  />
+
+                  <div className="overflow-x-auto rounded-b-xl border-x border-b border-slate-200 shadow-sm">
+                    <table className="w-full text-center border-collapse">
+                      <thead><tr className="bg-slate-50 border-b"><th className="p-3 text-slate-500">CASO</th><th className="p-3 text-slate-500">SINGULAR</th><th className="p-3 text-slate-500">PLURAL</th></tr></thead>
+                      <tbody className="divide-y divide-slate-100">
+                        <tr className="hover:bg-slate-50/50"><td className="p-3 font-bold text-slate-600 bg-slate-50/30">NOM</td><td><LWord r="miles" e="" showDes={showDesinencias}/> <LWord r="acer" e="" showDes={showDesinencias}/></td><td><LWord r="milit" e="es" showDes={showDesinencias}/> <LWord r="acr" e="es" showDes={showDesinencias}/></td></tr>
+                        <tr className="hover:bg-slate-50/50"><td className="p-3 font-bold text-slate-600 bg-slate-50/30">VOC</td><td><LWord r="miles" e="" showDes={showDesinencias}/> <LWord r="acer" e="" showDes={showDesinencias}/></td><td><LWord r="milit" e="es" showDes={showDesinencias}/> <LWord r="acr" e="es" showDes={showDesinencias}/></td></tr>
+                        <tr className="hover:bg-slate-50/50"><td className="p-3 font-bold text-slate-600 bg-slate-50/30">ACU</td><td><LWord r="milit" e="em" showDes={showDesinencias}/> <LWord r="acr" e="em" showDes={showDesinencias}/></td><td><LWord r="milit" e="es" showDes={showDesinencias}/> <LWord r="acr" e="es" showDes={showDesinencias}/></td></tr>
+                        <tr className="hover:bg-slate-50/50"><td className="p-3 font-bold text-slate-600 bg-slate-50/30">GEN</td><td><LWord r="milit" e="is" showDes={showDesinencias}/> <LWord r="acr" e="is" showDes={showDesinencias}/></td><td><LWord r="milit" e="um" showDes={showDesinencias}/> <LWord r="acr" e="ium" showDes={showDesinencias}/></td></tr>
+                        <tr className="hover:bg-slate-50/50"><td className="p-3 font-bold text-slate-600 bg-slate-50/30">DAT</td><td><LWord r="milit" e="i" showDes={showDesinencias}/> <LWord r="acr" e="i" showDes={showDesinencias}/></td><td><LWord r="milit" e="ibus" showDes={showDesinencias}/> <LWord r="acr" e="ibus" showDes={showDesinencias}/></td></tr>
+                        <tr className="hover:bg-slate-50/50"><td className="p-3 font-bold text-slate-600 bg-slate-50/30">ABL</td><td><LWord r="milit" e="e" showDes={showDesinencias}/> <LWord r="acr" e="i" showDes={showDesinencias}/></td><td><LWord r="milit" e="ibus" showDes={showDesinencias}/> <LWord r="acr" e="ibus" showDes={showDesinencias}/></td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                {/* EXERCISE 3 */}
+                <div>
+                  <div className="bg-slate-800 text-white p-4 rounded-t-xl font-bold font-serif text-lg flex justify-between items-center">
+                    <span>3. on-us, oner-is (n) + grav-is, -e</span>
+                    <span className="text-xs bg-slate-700 px-3 py-1 rounded-full font-sans font-normal tracking-wide">3ª Decl. Neutro + Adj 3ª Neutro</span>
+                  </div>
+                  
+                  <TeacherNote title="Regla de Oro de los Neutros">
+                    Recuerda que TODAS las palabras neutras en latín cumplen estrictamente esta regla: el Nominativo, Vocativo y Acusativo son <strong>idénticos</strong> (onus grave). Y en plural, esos mismos tres casos siempre terminan en <strong>-a</strong> o <strong>-ia</strong> (onera gravia).
+                  </TeacherNote>
+
+                  <div className="overflow-x-auto rounded-b-xl border-x border-b border-slate-200 shadow-sm">
+                    <table className="w-full text-center border-collapse">
+                      <thead><tr className="bg-slate-50 border-b"><th className="p-3 text-slate-500">CASO</th><th className="p-3 text-slate-500">SINGULAR</th><th className="p-3 text-slate-500">PLURAL</th></tr></thead>
+                      <tbody className="divide-y divide-slate-100">
+                        <tr className="hover:bg-slate-50/50 bg-indigo-50/20"><td className="p-3 font-bold text-indigo-700 bg-slate-50/30">NOM</td><td><LWord r="onus" e="" showDes={showDesinencias}/> <LWord r="grav" e="e" showDes={showDesinencias}/></td><td><LWord r="oner" e="a" showDes={showDesinencias}/> <LWord r="grav" e="ia" showDes={showDesinencias}/></td></tr>
+                        <tr className="hover:bg-slate-50/50 bg-indigo-50/20"><td className="p-3 font-bold text-indigo-700 bg-slate-50/30">VOC</td><td><LWord r="onus" e="" showDes={showDesinencias}/> <LWord r="grav" e="e" showDes={showDesinencias}/></td><td><LWord r="oner" e="a" showDes={showDesinencias}/> <LWord r="grav" e="ia" showDes={showDesinencias}/></td></tr>
+                        <tr className="hover:bg-slate-50/50 bg-indigo-50/20"><td className="p-3 font-bold text-indigo-700 bg-slate-50/30">ACU</td><td><LWord r="onus" e="" showDes={showDesinencias}/> <LWord r="grav" e="e" showDes={showDesinencias}/></td><td><LWord r="oner" e="a" showDes={showDesinencias}/> <LWord r="grav" e="ia" showDes={showDesinencias}/></td></tr>
+                        <tr className="hover:bg-slate-50/50"><td className="p-3 font-bold text-slate-600 bg-slate-50/30">GEN</td><td><LWord r="oner" e="is" showDes={showDesinencias}/> <LWord r="grav" e="is" showDes={showDesinencias}/></td><td><LWord r="oner" e="um" showDes={showDesinencias}/> <LWord r="grav" e="ium" showDes={showDesinencias}/></td></tr>
+                        <tr className="hover:bg-slate-50/50"><td className="p-3 font-bold text-slate-600 bg-slate-50/30">DAT</td><td><LWord r="oner" e="i" showDes={showDesinencias}/> <LWord r="grav" e="i" showDes={showDesinencias}/></td><td><LWord r="oner" e="ibus" showDes={showDesinencias}/> <LWord r="grav" e="ibus" showDes={showDesinencias}/></td></tr>
+                        <tr className="hover:bg-slate-50/50"><td className="p-3 font-bold text-slate-600 bg-slate-50/30">ABL</td><td><LWord r="oner" e="e" showDes={showDesinencias}/> <LWord r="grav" e="i" showDes={showDesinencias}/></td><td><LWord r="oner" e="ibus" showDes={showDesinencias}/> <LWord r="grav" e="ibus" showDes={showDesinencias}/></td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+              </section>
+            )}
+
+            {/* TAB CONTENT: VERBOS */}
+            {activeTab === 'verbos' && (
+              <section className="bg-white rounded-3xl shadow-lg p-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <h3 className="text-2xl font-bold text-indigo-900 border-b-2 border-indigo-100 pb-3 mb-6 flex items-center gap-2">
+                  <History className="text-indigo-500"/> El Verbo Latino
+                </h3>
+                
+                <PremiumTip 
+                  title="Vocal de Unión (3ª Conjugación)"
+                  text="Nota en el verbo 'Rego' que, al ser de la 3ª conjugación (tema en consonante reg-), necesita una vocal de unión o 'temática' para unir la raíz a las desinencias (reg-i-s, reg-i-t). En la 1ª conjugación (am-a-s) la vocal del tema '-a-' ya cumple esa función."
+                />
+
+                <div className="bg-white border-2 border-slate-100 rounded-2xl overflow-hidden shadow-sm mt-6">
+                  <div className="bg-gradient-to-r from-slate-100 to-slate-50 p-4 border-b border-slate-200">
+                    <h4 className="font-bold text-slate-800 text-lg flex items-center gap-2">
+                      <CheckCircle size={20} className="text-emerald-500"/> Presente de Indicativo
+                    </h4>
+                  </div>
+                  <div className="overflow-x-auto p-4">
+                    <table className="w-full text-center border-collapse">
+                      <thead>
+                        <tr>
+                          <th className="p-2 border-b-2"></th>
+                          <th className="p-2 border-b-2 font-bold text-indigo-800 bg-indigo-50/50 rounded-t-lg" colSpan="2">VOZ ACTIVA</th>
+                          <th className="p-2 border-b-2 font-bold text-emerald-800 bg-emerald-50/50 rounded-t-lg" colSpan="2">VOZ PASIVA</th>
+                        </tr>
+                        <tr className="text-sm text-slate-500">
+                          <th className="p-3 border-b border-r text-left bg-slate-50">Persona</th>
+                          <th className="p-3 border-b bg-indigo-50/30">Rego (3ª)</th>
+                          <th className="p-3 border-b border-r bg-indigo-50/30">Amo (1ª)</th>
+                          <th className="p-3 border-b bg-emerald-50/30">Regor (3ª)</th>
+                          <th className="p-3 border-b bg-emerald-50/30">Amor (1ª)</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100">
+                        <tr className="hover:bg-slate-50/50 transition-colors">
+                          <td className="p-3 border-r bg-slate-50/30 font-semibold text-left">1ª Sing.</td>
+                          <td><LWord r="reg" e="o" showDes={showDesinencias}/></td>
+                          <td className="border-r"><LWord r="am" e="o" showDes={showDesinencias}/></td>
+                          <td><LWord r="reg" e="or" showDes={showDesinencias}/></td>
+                          <td><LWord r="am" e="or" showDes={showDesinencias}/></td>
+                        </tr>
+                        <tr className="hover:bg-slate-50/50 transition-colors">
+                          <td className="p-3 border-r bg-slate-50/30 font-semibold text-left">2ª Sing.</td>
+                          <td><LWord r="reg" e="is" showDes={showDesinencias}/></td>
+                          <td className="border-r"><LWord r="am" e="as" showDes={showDesinencias}/></td>
+                          <td><LWord r="reg" e="eris" showDes={showDesinencias}/></td>
+                          <td><LWord r="am" e="aris" showDes={showDesinencias}/></td>
+                        </tr>
+                        <tr className="hover:bg-slate-50/50 transition-colors">
+                          <td className="p-3 border-r bg-slate-50/30 font-semibold text-left">3ª Sing.</td>
+                          <td><LWord r="reg" e="it" showDes={showDesinencias}/></td>
+                          <td className="border-r"><LWord r="am" e="at" showDes={showDesinencias}/></td>
+                          <td><LWord r="reg" e="itur" showDes={showDesinencias}/></td>
+                          <td><LWord r="am" e="atur" showDes={showDesinencias}/></td>
+                        </tr>
+                        <tr className="hover:bg-slate-50/50 transition-colors">
+                          <td className="p-3 border-r bg-slate-50/30 font-semibold text-left">1ª Plur.</td>
+                          <td><LWord r="reg" e="imus" showDes={showDesinencias}/></td>
+                          <td className="border-r"><LWord r="am" e="amus" showDes={showDesinencias}/></td>
+                          <td><LWord r="reg" e="imur" showDes={showDesinencias}/></td>
+                          <td><LWord r="am" e="amur" showDes={showDesinencias}/></td>
+                        </tr>
+                        <tr className="hover:bg-slate-50/50 transition-colors">
+                          <td className="p-3 border-r bg-slate-50/30 font-semibold text-left">2ª Plur.</td>
+                          <td><LWord r="reg" e="itis" showDes={showDesinencias}/></td>
+                          <td className="border-r"><LWord r="am" e="atis" showDes={showDesinencias}/></td>
+                          <td><LWord r="reg" e="imini" showDes={showDesinencias}/></td>
+                          <td><LWord r="am" e="amini" showDes={showDesinencias}/></td>
+                        </tr>
+                        <tr className="hover:bg-slate-50/50 transition-colors">
+                          <td className="p-3 border-r bg-slate-50/30 font-semibold text-left">3ª Plur.</td>
+                          <td><LWord r="reg" e="unt" showDes={showDesinencias}/></td>
+                          <td className="border-r"><LWord r="am" e="ant" showDes={showDesinencias}/></td>
+                          <td><LWord r="reg" e="untur" showDes={showDesinencias}/></td>
+                          <td><LWord r="am" e="antur" showDes={showDesinencias}/></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <RevealBlock title="Mostrar Formas No Personales e Imperativo">
+                   <div className="overflow-x-auto mt-2">
+                      <table className="w-full text-center border-collapse">
+                        <thead>
+                          <tr className="bg-slate-100 text-slate-700">
+                            <th className="p-3 border">MODO / FORMA</th>
+                            <th className="p-3 border">Rego (3ª)</th>
+                            <th className="p-3 border">Amo (1ª)</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-100">
+                          <tr><td className="p-3 border text-left font-bold bg-slate-50" colSpan="3">INFINITIVO</td></tr>
+                          <tr><td className="p-3 border text-left">Presente Activo</td><td className="p-3 border"><LWord r="reg" e="ere" showDes={showDesinencias}/></td><td className="p-3 border"><LWord r="am" e="are" showDes={showDesinencias}/></td></tr>
+                          <tr><td className="p-3 border text-left">Perfecto Activo</td><td className="p-3 border"><LWord r="rex" e="isse" showDes={showDesinencias}/></td><td className="p-3 border"><LWord r="amav" e="isse" showDes={showDesinencias}/></td></tr>
+                          
+                          <tr><td className="p-3 border text-left font-bold bg-slate-50" colSpan="3">IMPERATIVO PRESENTE</td></tr>
+                          <tr><td className="p-3 border text-left">2ª Persona Singular</td><td className="p-3 border"><LWord r="reg" e="e" showDes={showDesinencias}/></td><td className="p-3 border"><LWord r="am" e="a" showDes={showDesinencias}/></td></tr>
+                          <tr><td className="p-3 border text-left">2ª Persona Plural</td><td className="p-3 border"><LWord r="reg" e="ite" showDes={showDesinencias}/></td><td className="p-3 border"><LWord r="am" e="ate" showDes={showDesinencias}/></td></tr>
+
+                          <tr><td className="p-3 border text-left font-bold bg-slate-50" colSpan="3">PARTICIPIO</td></tr>
+                          <tr><td className="p-3 border text-left">Presente (Activo)</td><td className="p-3 border"><LWord r="reg" e="ens, -entis" showDes={showDesinencias}/></td><td className="p-3 border"><LWord r="am" e="ans, -antis" showDes={showDesinencias}/></td></tr>
+                          <tr><td className="p-3 border text-left">Perfecto (Pasivo)</td><td className="p-3 border"><LWord r="rect" e="us, a, um" showDes={showDesinencias}/></td><td className="p-3 border"><LWord r="amat" e="us, a, um" showDes={showDesinencias}/></td></tr>
+                        </tbody>
+                      </table>
+                   </div>
+                </RevealBlock>
+
+              </section>
+            )}
+
+            {/* TAB CONTENT: CULTURA */}
+            {activeTab === 'cultura' && (
+              <section className="bg-white rounded-3xl shadow-lg p-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b-2 border-indigo-100 pb-4 mb-6">
+                  <h3 className="text-2xl font-bold text-indigo-900 flex items-center gap-2">
+                    <Award className="text-indigo-500"/> Test de Cultura e Historia
+                  </h3>
+                  
+                  {/* Progress Tracker */}
+                  <div className="mt-4 md:mt-0 flex flex-col items-end">
+                    <div className="flex items-center gap-2 bg-gradient-to-r from-indigo-50 to-purple-50 border border-indigo-100 px-4 py-2 rounded-full font-bold text-indigo-800 shadow-sm">
+                      <Award size={20} className="text-purple-500"/>
+                      Puntuación: {quizScore} / {quizQuestions.length}
+                    </div>
+                    <div className="w-full bg-slate-100 h-2 rounded-full mt-2 overflow-hidden">
+                      <div 
+                        className="bg-indigo-500 h-full transition-all duration-500 ease-out"
+                        style={{ width: `${(quizState.filter(s => s !== null).length / quizQuestions.length) * 100}%` }}
+                      />
+                    </div>
+                  </div>
+                </div>
+                
+                <p className="text-slate-600 mb-8 text-lg">Haz clic en la respuesta correcta. Al contestar, recibirás una explicación histórica detallada elaborada por el departamento.</p>
+
+                <div className="space-y-8">
+                  {quizQuestions.map((q, qIndex) => {
+                    const status = quizState[qIndex];
+                    const isAnswered = status !== null;
+
+                    return (
+                      <div key={q.id} className={`p-6 rounded-2xl border-2 transition-all duration-300 shadow-sm ${isAnswered ? (status.isCorrect ? 'border-emerald-300 bg-emerald-50/40' : 'border-rose-300 bg-rose-50/40') : 'border-slate-200 bg-white hover:border-indigo-300 hover:shadow-md'}`}>
+                        <h4 className="font-semibold text-lg text-slate-800 mb-5 flex items-start gap-3">
+                          <span className="bg-slate-800 text-white w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-sm shadow-sm">{qIndex + 1}</span> 
+                          <span className="mt-1">{q.q}</span>
+                        </h4>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {q.options.map((opt, oIndex) => {
+                            let btnClass = "text-left p-4 rounded-xl border-2 transition-all text-[0.95rem] font-medium ";
+                            let Icon = null;
+                            
+                            if (!isAnswered) {
+                              btnClass += "border-slate-100 bg-slate-50 hover:border-indigo-400 hover:bg-indigo-50 hover:shadow-sm text-slate-700 active:scale-[0.98]";
+                            } else {
+                              if (q.correct === oIndex) {
+                                btnClass += "border-emerald-500 bg-emerald-100 text-emerald-900 shadow-sm";
+                                Icon = <Check size={20} className="text-emerald-600" />;
+                              } else if (status.selected === oIndex) {
+                                btnClass += "border-rose-500 bg-rose-100 text-rose-900 shadow-sm";
+                                Icon = <X size={20} className="text-rose-600" />;
+                              } else {
+                                btnClass += "border-slate-100 bg-white text-slate-400 opacity-60";
+                              }
+                            }
+
+                            return (
+                              <button
+                                key={oIndex}
+                                onClick={() => handleQuizAnswer(qIndex, oIndex)}
+                                disabled={isAnswered}
+                                className={`${btnClass} flex items-center justify-between`}
+                              >
+                                <span>{opt}</span>
+                                {Icon}
+                              </button>
+                            );
+                          })}
+                        </div>
+                        
+                        {isAnswered && (
+                          <div className={`mt-5 p-5 rounded-xl text-sm flex gap-3 items-start animate-in fade-in slide-in-from-top-4 ${status.isCorrect ? 'bg-emerald-100/80 text-emerald-900 border border-emerald-200' : 'bg-rose-100/80 text-rose-900 border border-rose-200'}`}>
+                            <Info size={22} className="shrink-0 mt-0.5" />
+                            <div className="leading-relaxed">
+                              <strong className="block mb-1 text-[1rem]">{status.isCorrect ? '¡Excelente!' : 'Respuesta incorrecta.'}</strong> {q.exp}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {quizScore === quizQuestions.length && quizQuestions.length > 0 && (
+                  <div className="mt-10 p-8 bg-gradient-to-br from-yellow-100 via-amber-100 to-yellow-200 rounded-2xl border-2 border-yellow-300 text-center animate-in zoom-in duration-500 shadow-xl">
+                    <h3 className="text-3xl font-black text-amber-800 flex justify-center items-center gap-3">
+                      <Award size={36} className="text-amber-600" /> ¡Summa Cum Laude!
+                    </h3>
+                    <p className="text-amber-900 mt-3 text-lg font-medium">Has conseguido un {quizScore}/{quizQuestions.length} perfecto en el test histórico.</p>
+                  </div>
+                )}
+              </section>
+            )}
+
+          </div>
+        </div>
+      );
+    }
+
+    // --- RENDERIZADO INICIAL ---
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>
