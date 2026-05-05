@@ -15,7 +15,7 @@
   <!-- Babel para compilar JSX en el navegador -->
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   
-  <!-- FontAwesome para los iconos (Sustituye a Lucide) -->
+  <!-- FontAwesome para los iconos -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body class="antialiased">
@@ -224,7 +224,7 @@
                   text="Nunca intentes adivinar la declinación por el Nominativo (la primera palabra del enunciado). Fíjate SIEMPRE en la terminación de la segunda palabra (el Genitivo). Es el código de barras que te dirá a qué grupo pertenece."
                 />
 
-                <RevealBlock title="1.1 Declinaciones en Latín" defaultOpen={true}>
+                <RevealBlock title="1.1 Resumen de Declinaciones en Latín" defaultOpen={true}>
                   <div className="overflow-x-auto rounded-xl border border-slate-200 shadow-sm">
                     <table className="w-full text-left border-collapse">
                       <thead>
@@ -245,7 +245,7 @@
                         <tr className="hover:bg-slate-50 transition-colors">
                           <td className="p-4 border-b border-r font-bold text-slate-700">Segunda</td>
                           <td className="p-4 border-b border-r"><span className="bg-rose-100 text-rose-800 font-bold px-3 py-1 rounded-full">-i</span></td>
-                          <td className="p-4 border-b border-r text-slate-600">Masculinos (-us, -er) y Neutros (-um)</td>
+                          <td className="p-4 border-b border-r text-slate-600">Masculinos (-us, -er, -ir) y Neutros (-um)</td>
                           <td className="p-4 border-b"><LWord r="domin" e="us" showDes={showDesinencias}/>, <LWord r="domin" e="i" showDes={showDesinencias}/> (m)</td>
                         </tr>
                         <tr className="hover:bg-slate-50 transition-colors">
@@ -318,15 +318,17 @@
                     <div>
                       <p className="mb-4 text-sm text-slate-700 leading-relaxed">
                         La <strong>segunda declinación</strong> comprende los temas en <strong>-o / -e</strong>.
-                        Incluye palabras <strong>masculinas</strong> (-us, -er, -ir) y <strong>neutras</strong> (-um). Recuerda: los neutros siempre repiten Nom, Voc y Acu (en singular <em>-um</em> y en plural <em>-a</em>).
+                        Incluye palabras <strong>masculinas</strong> (terminadas en <em>-us, -er, -ir</em>) y <strong>neutras</strong> (terminadas en <em>-um</em>). 
+                        Las palabras terminadas en <em>-er</em> pueden conservar la 'e' en toda la flexión (<em>puer, pueri</em>) o perderla desde el acusativo (<em>ager, agri</em>).
                       </p>
 
                       <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
                         <h5 className="font-bold text-blue-900 text-sm mb-2"><Icon name="fa-solid fa-list" size={14} /> Ejemplos Frecuentes</h5>
                         <ul className="text-sm text-blue-800 space-y-1 font-serif">
-                          <li>• <LWord r="domin" e="us" showDes={showDesinencias}/>, <LWord r="domin" e="i" showDes={showDesinencias}/> (m) - señor</li>
-                          <li>• <LWord r="puer" e="" showDes={showDesinencias}/>, <LWord r="puer" e="i" showDes={showDesinencias}/> (m) - niño</li>
-                          <li>• <LWord r="templ" e="um" showDes={showDesinencias}/>, <LWord r="templ" e="i" showDes={showDesinencias}/> (n) - templo</li>
+                          <li>• <span className="font-sans font-bold text-xs bg-blue-200 px-1 rounded">en -us</span> <LWord r="domin" e="us" showDes={showDesinencias}/>, <LWord r="domin" e="i" showDes={showDesinencias}/> (m) - señor</li>
+                          <li>• <span className="font-sans font-bold text-xs bg-blue-200 px-1 rounded">en -er</span> <LWord r="ager" e="" showDes={showDesinencias}/>, <LWord r="agr" e="i" showDes={showDesinencias}/> (m) - campo</li>
+                          <li>• <span className="font-sans font-bold text-xs bg-blue-200 px-1 rounded">en -ir</span> <LWord r="vir" e="" showDes={showDesinencias}/>, <LWord r="vir" e="i" showDes={showDesinencias}/> (m) - hombre</li>
+                          <li>• <span className="font-sans font-bold text-xs bg-blue-200 px-1 rounded">Neutro</span> <LWord r="templ" e="um" showDes={showDesinencias}/>, <LWord r="templ" e="i" showDes={showDesinencias}/> (n) - templo</li>
                         </ul>
                       </div>
 
@@ -352,7 +354,32 @@
                           </tbody>
                         </table>
                       </div>
+
+                      {/* Nuevos cuadros: Ager y Vir */}
+                      <div className="overflow-x-auto rounded-xl border border-slate-200 shadow-sm mt-6">
+                        <table className="w-full text-center border-collapse text-sm">
+                          <thead>
+                            <tr className="bg-blue-100 border-b">
+                              <th className="p-2 text-blue-900 font-bold">CASO</th>
+                              <th className="p-2 text-blue-900 font-bold" colSpan="2">MASC en -er (ager)</th>
+                              <th className="p-2 text-blue-900 font-bold" colSpan="2">MASC en -ir (vir)</th>
+                            </tr>
+                            <tr className="bg-blue-50/50 border-b text-xs text-blue-800">
+                              <th></th><th>Singular</th><th>Plural</th><th>Singular</th><th>Plural</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-slate-100">
+                            <tr className="hover:bg-slate-50"><td className="font-semibold text-slate-600 bg-slate-50/50 p-1">Nom</td><td><LWord r="ager" e="" showDes={showDesinencias}/></td><td><LWord r="agr" e="i" showDes={showDesinencias}/></td><td><LWord r="vir" e="" showDes={showDesinencias}/></td><td><LWord r="vir" e="i" showDes={showDesinencias}/></td></tr>
+                            <tr className="hover:bg-slate-50"><td className="font-semibold text-slate-600 bg-slate-50/50 p-1">Voc</td><td><LWord r="ager" e="" showDes={showDesinencias}/></td><td><LWord r="agr" e="i" showDes={showDesinencias}/></td><td><LWord r="vir" e="" showDes={showDesinencias}/></td><td><LWord r="vir" e="i" showDes={showDesinencias}/></td></tr>
+                            <tr className="hover:bg-slate-50"><td className="font-semibold text-slate-600 bg-slate-50/50 p-1">Acu</td><td><LWord r="agr" e="um" showDes={showDesinencias}/></td><td><LWord r="agr" e="os" showDes={showDesinencias}/></td><td><LWord r="vir" e="um" showDes={showDesinencias}/></td><td><LWord r="vir" e="os" showDes={showDesinencias}/></td></tr>
+                            <tr className="hover:bg-slate-50"><td className="font-semibold text-slate-600 bg-slate-50/50 p-1">Gen</td><td><LWord r="agr" e="i" showDes={showDesinencias}/></td><td><LWord r="agr" e="orum" showDes={showDesinencias}/></td><td><LWord r="vir" e="i" showDes={showDesinencias}/></td><td><LWord r="vir" e="orum" showDes={showDesinencias}/></td></tr>
+                            <tr className="hover:bg-slate-50"><td className="font-semibold text-slate-600 bg-slate-50/50 p-1">Dat</td><td><LWord r="agr" e="o" showDes={showDesinencias}/></td><td><LWord r="agr" e="is" showDes={showDesinencias}/></td><td><LWord r="vir" e="o" showDes={showDesinencias}/></td><td><LWord r="vir" e="is" showDes={showDesinencias}/></td></tr>
+                            <tr className="hover:bg-slate-50"><td className="font-semibold text-slate-600 bg-slate-50/50 p-1">Abl</td><td><LWord r="agr" e="o" showDes={showDesinencias}/></td><td><LWord r="agr" e="is" showDes={showDesinencias}/></td><td><LWord r="vir" e="o" showDes={showDesinencias}/></td><td><LWord r="vir" e="is" showDes={showDesinencias}/></td></tr>
+                          </tbody>
+                        </table>
+                      </div>
                     </div>
+                    
                     <div className="rounded-xl overflow-hidden shadow-md border border-slate-200 bg-slate-800 p-1">
                       <div className="aspect-video w-full rounded-lg overflow-hidden">
                         <iframe src="https://www.youtube.com/embed/UY-jDk_19N8" title="2ª Declinación" className="w-full h-full" frameBorder="0" allowFullScreen></iframe>
@@ -365,14 +392,20 @@
                   <div className="grid lg:grid-cols-2 gap-6 items-start">
                     <div>
                       <p className="mb-4 text-sm text-slate-700 leading-relaxed">
-                        La <strong>tercera declinación</strong> se divide en: <strong>temas en consonante</strong> (imparisílabos, genitivo plural en <em>-um</em>) y <strong>temas en -i</strong> (parisílabos o falsos imparisílabos, genitivo plural en <em>-ium</em>). Contiene los tres géneros.
+                        La <strong>tercera declinación</strong> se divide en dos grandes subgrupos que debemos diferenciar, sobre todo por cómo hacen el Genitivo Plural:
+                        <br/><br/>
+                        1. <strong>Temas en consonante (Imparisílabos):</strong> Tienen distinto número de sílabas en el Nominativo y en el Genitivo. Su genitivo plural termina en <strong>-um</strong>.
+                        <br/>
+                        2. <strong>Temas en -i (Parisílabos):</strong> Tienen el mismo número de sílabas. Su genitivo plural termina en <strong>-ium</strong>. 
+                        *(Ojo con los "Falsos Imparisílabos": como <LWord r="urb" e="s" showDes={false}/>, <LWord r="urb" e="is" showDes={false}/>; son imparisílabos pero su raíz acaba en dos consonantes, por lo que se declinan como los temas en -i).*
                       </p>
 
                       <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-3 mb-4">
                         <h5 className="font-bold text-emerald-900 text-sm mb-2"><Icon name="fa-solid fa-list" size={14} /> Ejemplos Frecuentes</h5>
                         <ul className="text-sm text-emerald-800 space-y-1 font-serif">
                           <li>• <span className="font-sans font-bold text-xs bg-emerald-200 px-1 rounded">Cons</span> <LWord r="consul" e="" showDes={showDesinencias}/>, <LWord r="consul" e="is" showDes={showDesinencias}/> (m) - cónsul</li>
-                          <li>• <span className="font-sans font-bold text-xs bg-emerald-200 px-1 rounded">Tema i</span> <LWord r="mar" e="e" showDes={showDesinencias}/>, <LWord r="mar" e="is" showDes={showDesinencias}/> (n) - mar</li>
+                          <li>• <span className="font-sans font-bold text-xs bg-emerald-200 px-1 rounded">Tema -i</span> <LWord r="civ" e="is" showDes={showDesinencias}/>, <LWord r="civ" e="is" showDes={showDesinencias}/> (m/f) - ciudadano</li>
+                          <li>• <span className="font-sans font-bold text-xs bg-emerald-200 px-1 rounded">Falso Imp.</span> <LWord r="urb" e="s" showDes={showDesinencias}/>, <LWord r="urb" e="is" showDes={showDesinencias}/> (f) - ciudad</li>
                         </ul>
                       </div>
 
@@ -382,19 +415,19 @@
                             <tr className="bg-emerald-100 border-b">
                               <th className="p-2 text-emerald-900 font-bold">CASO</th>
                               <th className="p-2 text-emerald-900 font-bold" colSpan="2">CONSONANTE (consul)</th>
-                              <th className="p-2 text-emerald-900 font-bold" colSpan="2">TEMA -I Neutro (mare)</th>
+                              <th className="p-2 text-emerald-900 font-bold" colSpan="2">TEMA -I (civis)</th>
                             </tr>
                             <tr className="bg-emerald-50/50 border-b text-xs text-emerald-800">
                               <th></th><th>Singular</th><th>Plural</th><th>Singular</th><th>Plural</th>
                             </tr>
                           </thead>
                           <tbody className="divide-y divide-slate-100">
-                            <tr className="hover:bg-slate-50"><td className="font-semibold text-slate-600 bg-slate-50/50 p-1">Nom</td><td><LWord r="consul" e="" showDes={showDesinencias}/></td><td><LWord r="consul" e="es" showDes={showDesinencias}/></td><td><LWord r="mar" e="e" showDes={showDesinencias}/></td><td><LWord r="mar" e="ia" showDes={showDesinencias}/></td></tr>
-                            <tr className="hover:bg-slate-50"><td className="font-semibold text-slate-600 bg-slate-50/50 p-1">Voc</td><td><LWord r="consul" e="" showDes={showDesinencias}/></td><td><LWord r="consul" e="es" showDes={showDesinencias}/></td><td><LWord r="mar" e="e" showDes={showDesinencias}/></td><td><LWord r="mar" e="ia" showDes={showDesinencias}/></td></tr>
-                            <tr className="hover:bg-slate-50"><td className="font-semibold text-slate-600 bg-slate-50/50 p-1">Acu</td><td><LWord r="consul" e="em" showDes={showDesinencias}/></td><td><LWord r="consul" e="es" showDes={showDesinencias}/></td><td><LWord r="mar" e="e" showDes={showDesinencias}/></td><td><LWord r="mar" e="ia" showDes={showDesinencias}/></td></tr>
-                            <tr className="hover:bg-slate-50"><td className="font-semibold text-slate-600 bg-slate-50/50 p-1">Gen</td><td><LWord r="consul" e="is" showDes={showDesinencias}/></td><td><LWord r="consul" e="um" showDes={showDesinencias}/></td><td><LWord r="mar" e="is" showDes={showDesinencias}/></td><td className="text-emerald-700 font-bold"><LWord r="mar" e="ium" showDes={showDesinencias}/></td></tr>
-                            <tr className="hover:bg-slate-50"><td className="font-semibold text-slate-600 bg-slate-50/50 p-1">Dat</td><td><LWord r="consul" e="i" showDes={showDesinencias}/></td><td><LWord r="consul" e="ibus" showDes={showDesinencias}/></td><td><LWord r="mar" e="i" showDes={showDesinencias}/></td><td><LWord r="mar" e="ibus" showDes={showDesinencias}/></td></tr>
-                            <tr className="hover:bg-slate-50"><td className="font-semibold text-slate-600 bg-slate-50/50 p-1">Abl</td><td><LWord r="consul" e="e" showDes={showDesinencias}/></td><td><LWord r="consul" e="ibus" showDes={showDesinencias}/></td><td><LWord r="mar" e="i" showDes={showDesinencias}/></td><td><LWord r="mar" e="ibus" showDes={showDesinencias}/></td></tr>
+                            <tr className="hover:bg-slate-50"><td className="font-semibold text-slate-600 bg-slate-50/50 p-1">Nom</td><td><LWord r="consul" e="" showDes={showDesinencias}/></td><td><LWord r="consul" e="es" showDes={showDesinencias}/></td><td><LWord r="civ" e="is" showDes={showDesinencias}/></td><td><LWord r="civ" e="es" showDes={showDesinencias}/></td></tr>
+                            <tr className="hover:bg-slate-50"><td className="font-semibold text-slate-600 bg-slate-50/50 p-1">Voc</td><td><LWord r="consul" e="" showDes={showDesinencias}/></td><td><LWord r="consul" e="es" showDes={showDesinencias}/></td><td><LWord r="civ" e="is" showDes={showDesinencias}/></td><td><LWord r="civ" e="es" showDes={showDesinencias}/></td></tr>
+                            <tr className="hover:bg-slate-50"><td className="font-semibold text-slate-600 bg-slate-50/50 p-1">Acu</td><td><LWord r="consul" e="em" showDes={showDesinencias}/></td><td><LWord r="consul" e="es" showDes={showDesinencias}/></td><td><LWord r="civ" e="em" showDes={showDesinencias}/></td><td><LWord r="civ" e="es" showDes={showDesinencias}/></td></tr>
+                            <tr className="hover:bg-slate-50"><td className="font-semibold text-slate-600 bg-slate-50/50 p-1">Gen</td><td><LWord r="consul" e="is" showDes={showDesinencias}/></td><td className="font-bold text-emerald-700"><LWord r="consul" e="um" showDes={showDesinencias}/></td><td><LWord r="civ" e="is" showDes={showDesinencias}/></td><td className="font-bold text-emerald-700"><LWord r="civ" e="ium" showDes={showDesinencias}/></td></tr>
+                            <tr className="hover:bg-slate-50"><td className="font-semibold text-slate-600 bg-slate-50/50 p-1">Dat</td><td><LWord r="consul" e="i" showDes={showDesinencias}/></td><td><LWord r="consul" e="ibus" showDes={showDesinencias}/></td><td><LWord r="civ" e="i" showDes={showDesinencias}/></td><td><LWord r="civ" e="ibus" showDes={showDesinencias}/></td></tr>
+                            <tr className="hover:bg-slate-50"><td className="font-semibold text-slate-600 bg-slate-50/50 p-1">Abl</td><td><LWord r="consul" e="e" showDes={showDesinencias}/></td><td><LWord r="consul" e="ibus" showDes={showDesinencias}/></td><td><LWord r="civ" e="e" showDes={showDesinencias}/></td><td><LWord r="civ" e="ibus" showDes={showDesinencias}/></td></tr>
                           </tbody>
                         </table>
                       </div>
@@ -539,6 +572,29 @@
                           </tbody>
                         </table>
                       </div>
+
+                      {/* Cuadro para adjetivos en -er (pulcher) */}
+                      <div className="overflow-x-auto rounded-xl border border-slate-200 shadow-sm mb-4">
+                        <table className="w-full text-center border-collapse text-sm">
+                          <thead>
+                            <tr className="bg-indigo-100 border-b">
+                              <th className="p-2 text-indigo-900 font-bold" rowSpan="2">CASO</th>
+                              <th className="p-1 text-indigo-900 font-bold border-b border-indigo-200" colSpan="3">SINGULAR (-er: pulcher, pulchra...)</th>
+                            </tr>
+                            <tr className="bg-indigo-50/50 border-b text-xs text-indigo-800">
+                              <th className="p-1">Masc (2ª)</th><th className="p-1">Fem (1ª)</th><th className="p-1">Neut (2ª)</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-slate-100">
+                            <tr className="hover:bg-slate-50"><td className="font-semibold text-slate-600 bg-slate-50/50 p-1">Nom</td><td><LWord r="pulcher" e="" showDes={showDesinencias}/></td><td><LWord r="pulchr" e="a" showDes={showDesinencias}/></td><td><LWord r="pulchr" e="um" showDes={showDesinencias}/></td></tr>
+                            <tr className="hover:bg-slate-50"><td className="font-semibold text-slate-600 bg-slate-50/50 p-1">Acus</td><td><LWord r="pulchr" e="um" showDes={showDesinencias}/></td><td><LWord r="pulchr" e="am" showDes={showDesinencias}/></td><td><LWord r="pulchr" e="um" showDes={showDesinencias}/></td></tr>
+                            <tr className="hover:bg-slate-50"><td className="font-semibold text-slate-600 bg-slate-50/50 p-1">Gen</td><td><LWord r="pulchr" e="i" showDes={showDesinencias}/></td><td><LWord r="pulchr" e="ae" showDes={showDesinencias}/></td><td><LWord r="pulchr" e="i" showDes={showDesinencias}/></td></tr>
+                            <tr className="hover:bg-slate-50"><td className="font-semibold text-slate-600 bg-slate-50/50 p-1">Dat</td><td><LWord r="pulchr" e="o" showDes={showDesinencias}/></td><td><LWord r="pulchr" e="ae" showDes={showDesinencias}/></td><td><LWord r="pulchr" e="o" showDes={showDesinencias}/></td></tr>
+                            <tr className="hover:bg-slate-50"><td className="font-semibold text-slate-600 bg-slate-50/50 p-1">Abl</td><td><LWord r="pulchr" e="o" showDes={showDesinencias}/></td><td><LWord r="pulchr" e="a" showDes={showDesinencias}/></td><td><LWord r="pulchr" e="o" showDes={showDesinencias}/></td></tr>
+                          </tbody>
+                        </table>
+                      </div>
+
                     </div>
                     <div className="rounded-xl overflow-hidden shadow-md border border-slate-200 bg-slate-800 p-1">
                       <div className="aspect-video w-full rounded-lg overflow-hidden">
@@ -552,7 +608,7 @@
                   <div className="grid lg:grid-cols-2 gap-6 items-start">
                     <div>
                       <p className="mb-4 text-sm text-slate-700 leading-relaxed">
-                        Se declinan exclusivamente por la <strong>tercera declinación</strong> (temas en -i). Según sus terminaciones en el Nominativo Singular, se dividen en tres grupos (de 3, de 2 y de 1 terminación).
+                        Se declinan exclusivamente por la <strong>tercera declinación</strong> (son temas en -i, por lo que su ablativo singular acaba en <em>-i</em> y su genitivo plural en <em>-ium</em>). Según sus terminaciones en el Nominativo Singular, se dividen en tres grupos.
                       </p>
 
                       <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-3 mb-4">
@@ -564,12 +620,33 @@
                         </ul>
                       </div>
 
+                      {/* Cuadro de 3 Terminaciones (acer) */}
                       <div className="overflow-x-auto rounded-xl border border-slate-200 shadow-sm mb-4">
                         <table className="w-full text-center border-collapse text-sm">
                           <thead>
                             <tr className="bg-emerald-100 border-b">
                               <th className="p-2 text-emerald-900 font-bold" rowSpan="2">CASO</th>
-                              <th className="p-1 text-emerald-900 font-bold border-b border-emerald-200" colSpan="2">SINGULAR (2 Terminaciones)</th>
+                              <th className="p-1 text-emerald-900 font-bold border-b border-emerald-200" colSpan="3">SINGULAR (3 Term: acer, acris, acre)</th>
+                            </tr>
+                            <tr className="bg-emerald-50/50 border-b text-xs text-emerald-800">
+                              <th className="p-1">Masc</th><th className="p-1">Fem</th><th className="p-1">Neutro</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-slate-100">
+                            <tr className="hover:bg-slate-50"><td className="font-semibold text-slate-600 bg-slate-50/50 p-1">Nom</td><td><LWord r="acer" e="" showDes={showDesinencias}/></td><td><LWord r="acr" e="is" showDes={showDesinencias}/></td><td><LWord r="acr" e="e" showDes={showDesinencias}/></td></tr>
+                            <tr className="hover:bg-slate-50"><td className="font-semibold text-slate-600 bg-slate-50/50 p-1">Acus</td><td><LWord r="acr" e="em" showDes={showDesinencias}/></td><td><LWord r="acr" e="em" showDes={showDesinencias}/></td><td><LWord r="acr" e="e" showDes={showDesinencias}/></td></tr>
+                            <tr className="hover:bg-slate-50"><td className="font-semibold text-slate-600 bg-slate-50/50 p-1">Gen</td><td><LWord r="acr" e="is" showDes={showDesinencias}/></td><td><LWord r="acr" e="is" showDes={showDesinencias}/></td><td><LWord r="acr" e="is" showDes={showDesinencias}/></td></tr>
+                          </tbody>
+                        </table>
+                      </div>
+
+                      {/* Cuadro de 2 Terminaciones (omnis) */}
+                      <div className="overflow-x-auto rounded-xl border border-slate-200 shadow-sm mb-4">
+                        <table className="w-full text-center border-collapse text-sm">
+                          <thead>
+                            <tr className="bg-emerald-100 border-b">
+                              <th className="p-2 text-emerald-900 font-bold" rowSpan="2">CASO</th>
+                              <th className="p-1 text-emerald-900 font-bold border-b border-emerald-200" colSpan="2">SINGULAR (2 Term: omnis, omne)</th>
                             </tr>
                             <tr className="bg-emerald-50/50 border-b text-xs text-emerald-800">
                               <th className="p-1">Masc/Fem</th><th className="p-1">Neutro</th>
@@ -578,12 +655,31 @@
                           <tbody className="divide-y divide-slate-100">
                             <tr className="hover:bg-slate-50"><td className="font-semibold text-slate-600 bg-slate-50/50 p-1">Nom</td><td><LWord r="omn" e="is" showDes={showDesinencias}/></td><td><LWord r="omn" e="e" showDes={showDesinencias}/></td></tr>
                             <tr className="hover:bg-slate-50"><td className="font-semibold text-slate-600 bg-slate-50/50 p-1">Acus</td><td><LWord r="omn" e="em" showDes={showDesinencias}/></td><td><LWord r="omn" e="e" showDes={showDesinencias}/></td></tr>
-                            <tr className="hover:bg-slate-50"><td className="font-semibold text-slate-600 bg-slate-50/50 p-1">Gen</td><td><LWord r="omn" e="is" showDes={showDesinencias}/></td><td><LWord r="omn" e="is" showDes={showDesinencias}/></td></tr>
-                            <tr className="hover:bg-slate-50"><td className="font-semibold text-slate-600 bg-slate-50/50 p-1">Dat</td><td><LWord r="omn" e="i" showDes={showDesinencias}/></td><td><LWord r="omn" e="i" showDes={showDesinencias}/></td></tr>
-                            <tr className="hover:bg-slate-50"><td className="font-semibold text-slate-600 bg-slate-50/50 p-1">Abl</td><td><LWord r="omn" e="i" showDes={showDesinencias}/></td><td><LWord r="omn" e="i" showDes={showDesinencias}/></td></tr>
+                            <tr className="hover:bg-slate-50"><td className="font-semibold text-slate-600 bg-slate-50/50 p-1">Abl</td><td><LWord r="omn" e="i" showDes={showDesinencias}/></td><td className="font-bold text-emerald-700"><LWord r="omn" e="i" showDes={showDesinencias}/></td></tr>
                           </tbody>
                         </table>
                       </div>
+
+                      {/* Cuadro de 1 Terminación (felix) */}
+                      <div className="overflow-x-auto rounded-xl border border-slate-200 shadow-sm mb-4">
+                        <table className="w-full text-center border-collapse text-sm">
+                          <thead>
+                            <tr className="bg-emerald-100 border-b">
+                              <th className="p-2 text-emerald-900 font-bold" rowSpan="2">CASO</th>
+                              <th className="p-1 text-emerald-900 font-bold border-b border-emerald-200" colSpan="2">SINGULAR (1 Term: felix, felicis)</th>
+                            </tr>
+                            <tr className="bg-emerald-50/50 border-b text-xs text-emerald-800">
+                              <th className="p-1">Masc/Fem</th><th className="p-1">Neutro</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-slate-100">
+                            <tr className="hover:bg-slate-50"><td className="font-semibold text-slate-600 bg-slate-50/50 p-1">Nom</td><td><LWord r="felix" e="" showDes={showDesinencias}/></td><td><LWord r="felix" e="" showDes={showDesinencias}/></td></tr>
+                            <tr className="hover:bg-slate-50"><td className="font-semibold text-slate-600 bg-slate-50/50 p-1">Acus</td><td><LWord r="felic" e="em" showDes={showDesinencias}/></td><td><LWord r="felix" e="" showDes={showDesinencias}/></td></tr>
+                            <tr className="hover:bg-slate-50"><td className="font-semibold text-slate-600 bg-slate-50/50 p-1">Abl</td><td><LWord r="felic" e="i" showDes={showDesinencias}/></td><td className="font-bold text-emerald-700"><LWord r="felic" e="i" showDes={showDesinencias}/></td></tr>
+                          </tbody>
+                        </table>
+                      </div>
+
                     </div>
                     <div className="rounded-xl overflow-hidden shadow-md border border-slate-200 bg-slate-800 p-1">
                       <div className="aspect-video w-full rounded-lg overflow-hidden">
